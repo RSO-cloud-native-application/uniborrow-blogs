@@ -7,10 +7,14 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.List;
 import java.util.logging.Logger;
 import com.kumuluz.ee.logs.cdi.Log;
 
+import org.apache.logging.log4j.core.util.SystemClock;
+import org.eclipse.persistence.jpa.jpql.parser.DateTime;
 import si.fri.rso.uniborrow.blogs.lib.Blog;
 import si.fri.rso.uniborrow.blogs.models.entities.BlogEntity;
 import si.fri.rso.uniborrow.blogs.services.beans.BlogBean;
@@ -57,10 +61,10 @@ public class BlogsResource {
     @POST
     public Response createBlog(BlogEntity blogEntity) {
         if (blogEntity.getTitle() == null ||
-                blogEntity.getText() == null || blogEntity.getUserId() == null
-                || blogEntity.getTimestamp() == null) {
+                blogEntity.getText() == null || blogEntity.getUserId() == null) {
             return Response.status(300).build();
         } else {
+            blogEntity.setTimestamp(Instant.now());
             blogEntity = blogBean.createBlog(blogEntity);
         }
         return Response.status(Response.Status.OK).entity(blogEntity).build();
@@ -70,6 +74,7 @@ public class BlogsResource {
     @Path("{blogId}")
     public Response updateBlog(Blog blog, @PathParam("blogId") Integer blogId) {
 
+        blog.setTimestamp(Instant.now());
         blog = blogBean.putBlog(blog, blogId);
         if (blog == null) {
             return Response.status(Response.Status.NOT_FOUND).build();

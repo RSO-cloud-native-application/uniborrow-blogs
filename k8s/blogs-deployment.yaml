@@ -13,22 +13,22 @@ spec:
         app: blogs
     spec:
       containers:
-        - image: mp6079/blogs:2022-01-01-19-12-12
+        - image: mp6079/blogs:2022-01-03-08-36-43
           name: blogs
           env:
             - name: KUMULUZEE_DATASOURCES0_CONNECTIONURL
-              value: jdbc:postgresql://abul.db.elephantsql.com:5432/yhojegkl
+              value: jdbc:postgresql://abul.db.elephantsql.com:5432/ooxcwsbk
             - name: KUMULUZEE_DATASOURCES0_USERNAME
-              value: yhojegkl
+              value: ooxcwsbk
             - name: KUMULUZEE_DATASOURCES0_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: uniborrow-blogs-db-pass
                   key: password
             - name: KUMULUZEE_CONFIG_ETCD_HOSTS
-              value: http://consul:8500
+              value: http://etcd:2379
             - name: KUMULUZEE_DISCOVERY_ETCD_HOSTS
-              value: http://consul:8500
+              value: http://etcd:2379
             - name: KUMULUZEE_DISCOVERY_CLUSTER
               value: uniborrow-cluster
             - name: KUMULUZEE_SERVER_BASEURL
