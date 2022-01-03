@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>si.fri.rso.uniborrow</groupId>
-    <artifactId>items</artifactId>
+    <artifactId>blogs</artifactId>
     <version>1.0.0-SNAPSHOT</version>
 
     <packaging>pom</packaging>
@@ -71,7 +71,7 @@
             </dependency>
 
             <dependency>
-                <artifactId>kumuluzee-config-etcd</artifactId>
+                <artifactId>kumuluzee-config-consul</artifactId>
                 <groupId>com.kumuluz.ee.config</groupId>
                 <version>${kumuluzee-config.version}</version>
             </dependency>
@@ -84,7 +84,7 @@
 
             <dependency>
                 <groupId>com.kumuluz.ee.discovery</groupId>
-                <artifactId>kumuluzee-discovery-etcd</artifactId>
+                <artifactId>kumuluzee-discovery-consul</artifactId>
                 <version>${kumuluzee-discovery.version}</version>
             </dependency>
 
@@ -96,22 +96,22 @@
 
             <dependency>
                 <groupId>si.fri.rso.uniborrow</groupId>
-                <artifactId>items-api</artifactId>
+                <artifactId>blogs-api</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>si.fri.rso.uniborrow</groupId>
-                <artifactId>items-models</artifactId>
+                <artifactId>blogs-models</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>si.fri.rso.uniborrow</groupId>
-                <artifactId>items-services</artifactId>
+                <artifactId>blogs-services</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>si.fri.rso.uniborrow</groupId>
-                <artifactId>items-lib</artifactId>
+                <artifactId>blogs-lib</artifactId>
                 <version>${project.version}</version>
             </dependency>
         </dependencies>

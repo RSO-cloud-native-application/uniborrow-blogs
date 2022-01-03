@@ -1,0 +1,66 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: blogs-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: blogs
+  template:
+    metadata:
+      labels:
+        app: blogs
+    spec:
+      containers:
+        - image: mp6079/blogs:2022-01-01-19-12-12
+          name: blogs
+          env:
+            - name: KUMULUZEE_DATASOURCES0_CONNECTIONURL
+              value: jdbc:postgresql://abul.db.elephantsql.com:5432/yhojegkl
+            - name: KUMULUZEE_DATASOURCES0_USERNAME
+              value: yhojegkl
+            - name: KUMULUZEE_DATASOURCES0_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: uniborrow-blogs-db-pass
+                  key: password
+            - name: KUMULUZEE_CONFIG_ETCD_HOSTS
+              value: http://consul:8500
+            - name: KUMULUZEE_DISCOVERY_ETCD_HOSTS
+              value: http://consul:8500
+            - name: KUMULUZEE_DISCOVERY_CLUSTER
+              value: uniborrow-cluster
+            - name: KUMULUZEE_SERVER_BASEURL
+              value: http://uniborrow-blogs:8080
+          ports:
+            - containerPort: 8080
+              name: server
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /health/live
+              port: server
+            initialDelaySeconds: 20
+            periodSeconds: 3
+          readinessProbe:
+            httpGet:
+              path: /health/ready
+              port: server
+            initialDelaySeconds: 20
+            periodSeconds: 3
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: blogs
+spec:
+  type: ClusterIP
+  ports:
+    - port: 8080
+      protocol: TCP
+      targetPort: server
+  selector:
+    app: blogs

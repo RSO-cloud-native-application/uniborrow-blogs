@@ -1,5 +1,5 @@
 kumuluzee:
-  name: items-service
+  name: blogs-service
   env:
     name: dev
   version: 1.0.0
@@ -8,17 +8,17 @@ kumuluzee:
     http:
       port: 8080
   discovery:
-    etcd:
+    consul:
       hosts: http://localhost:2379
     ttl: 30
     ping-interval: 5
   datasources:
-    - jndi-name: jdbc/ItemsDB
-      connection-url: jdbc:postgresql://localhost:5432/items
+    - jndi-name: jdbc/BlogsDB
+      connection-url: jdbc:postgresql://localhost:5432/blogs
       username: dbuser
       password: postgres
   config:
-    etcd:
+    consul:
       hosts: http://localhost:2379
     start-retry-delay-ms: 500
     max-retry-delay-ms: 900000
@@ -26,11 +26,11 @@ kumuluzee:
     checks:
       data-source-health-check:
         type: liveness
-        jndi-name: jdbc/ItemsDB
+        jndi-name: jdbc/BlogsDB
     metrics:
       web-instrumentation:
-        - name: items-endpoint
-          url-pattern: /v1/items/*
+        - name: blogs-endpoint
+          url-pattern: /v1/blogs/*
   logs:
     config-file: '<?xml version="1.0" encoding="UTF-8"?>
                             <Configuration name="comments">
