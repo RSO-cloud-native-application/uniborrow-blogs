@@ -19,6 +19,14 @@ import si.fri.rso.uniborrow.blogs.lib.Blog;
 import si.fri.rso.uniborrow.blogs.models.entities.BlogEntity;
 import si.fri.rso.uniborrow.blogs.services.beans.BlogBean;
 import si.fri.rso.uniborrow.blogs.services.config.RestProperties;
+import org.eclipse.microprofile.openapi.annotations.Operation;
+import org.eclipse.microprofile.openapi.annotations.enums.SchemaType;
+import org.eclipse.microprofile.openapi.annotations.media.Content;
+import org.eclipse.microprofile.openapi.annotations.media.Schema;
+import org.eclipse.microprofile.openapi.annotations.parameters.Parameter;
+import org.eclipse.microprofile.openapi.annotations.parameters.RequestBody;
+import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
+import org.eclipse.microprofile.openapi.annotations.responses.APIResponses;
 
 @Log
 @ApplicationScoped
@@ -40,6 +48,18 @@ public class BlogsResource {
     protected UriInfo uriInfo;
 
     @GET
+    @Operation(description = "Get blogs by filter, or all.", summary = "Get blogs by filter, or all.")
+    @APIResponses({
+            @APIResponse(
+                    responseCode = "200",
+                    description = "Blogs that fit the filter.",
+                    content = @Content(schema = @Schema(implementation = BlogEntity.class, type = SchemaType.ARRAY))
+            ),
+            @APIResponse(
+                    responseCode = "404",
+                    description = "No blogs found."
+            )
+    })
     public Response getBlogs() {
         List<BlogEntity> blogs = blogBean.getBlogsFilter(uriInfo);
         return Response.status(200).entity(blogs).build();
@@ -47,6 +67,18 @@ public class BlogsResource {
 
     @GET
     @Path("/{blogId}")
+    @Operation(description = "Get blog by id.", summary = "Get blog by id.")
+    @APIResponses({
+            @APIResponse(
+                    responseCode = "200",
+                    description = "Blog by id.",
+                    content = @Content(schema = @Schema(implementation = BlogEntity.class))
+            ),
+            @APIResponse(
+                    responseCode = "404",
+                    description = "Blog with id not found."
+            )
+    })
     public Response getBlog(@PathParam("blogId") Integer blogId) {
         Blog blog = blogBean.getBlog(blogId);
         if (blog == null) {
@@ -59,6 +91,18 @@ public class BlogsResource {
     }
 
     @POST
+    @Operation(description = "Create new blog.", summary = "Create new blog.")
+    @APIResponses({
+            @APIResponse(
+                    responseCode = "200",
+                    description = "Created Blog",
+                    content = @Content(schema = @Schema(implementation = BlogEntity.class))
+            ),
+            @APIResponse(
+                    responseCode = "400",
+                    description = "Problems with blog body."
+            )
+    })
     public Response createBlog(BlogEntity blogEntity) {
         if (blogEntity.getTitle() == null ||
                 blogEntity.getText() == null || blogEntity.getUserId() == null) {
@@ -72,6 +116,18 @@ public class BlogsResource {
 
     @PUT
     @Path("{blogId}")
+    @Operation(description = "Edit a blog.", summary = "Edit a blog.")
+    @APIResponses({
+            @APIResponse(
+                    responseCode = "200",
+                    description = "Edited blog",
+                    content = @Content(schema = @Schema(implementation = BlogEntity.class))
+            ),
+            @APIResponse(
+                    responseCode = "400",
+                    description = "Problems with blog body."
+            )
+    })
     public Response updateBlog(Blog blog, @PathParam("blogId") Integer blogId) {
 
         blog.setTimestamp(Instant.now());
@@ -84,6 +140,18 @@ public class BlogsResource {
 
     @PATCH
     @Path("{blogId}")
+    @Operation(description = "Patch a blog.", summary = "Patch a blog.")
+    @APIResponses({
+            @APIResponse(
+                    responseCode = "200",
+                    description = "Patched blog",
+                    content = @Content(schema = @Schema(implementation = BlogEntity.class))
+            ),
+            @APIResponse(
+                    responseCode = "400",
+                    description = "Problems with blog body."
+            )
+    })
     public Response patchBlog(Blog blog, @PathParam("blogId") Integer blogId) {
         blog = blogBean.patchBlog(blog, blogId);
         if (blog == null) {
@@ -94,6 +162,17 @@ public class BlogsResource {
 
     @DELETE
     @Path("{blogId}")
+    @Operation(description = "Delete a blog.", summary = "Delete a blog.")
+    @APIResponses({
+            @APIResponse(
+                    responseCode = "200",
+                    description = "Blog deleted."
+            ),
+            @APIResponse(
+                    responseCode = "404",
+                    description = "Blog not found."
+            )
+    })
     public Response deleteBlog(@PathParam("blogId") Integer blogId) {
         boolean isSuccessful = blogBean.deleteBlog(blogId);
         if (isSuccessful) {
