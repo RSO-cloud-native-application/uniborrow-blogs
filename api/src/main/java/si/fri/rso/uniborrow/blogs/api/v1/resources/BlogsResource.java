@@ -7,14 +7,11 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
-import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.List;
 import java.util.logging.Logger;
 import com.kumuluz.ee.logs.cdi.Log;
 
-import org.apache.logging.log4j.core.util.SystemClock;
-import org.eclipse.persistence.jpa.jpql.parser.DateTime;
 import si.fri.rso.uniborrow.blogs.lib.Blog;
 import si.fri.rso.uniborrow.blogs.models.entities.BlogEntity;
 import si.fri.rso.uniborrow.blogs.services.beans.BlogBean;
@@ -23,10 +20,12 @@ import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.enums.SchemaType;
 import org.eclipse.microprofile.openapi.annotations.media.Content;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
-import org.eclipse.microprofile.openapi.annotations.parameters.Parameter;
-import org.eclipse.microprofile.openapi.annotations.parameters.RequestBody;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponses;
+import si.fri.rso.uniborrow.blogs.services.users.UsersService;
+import org.eclipse.microprofile.metrics.annotation.Counted;
+import org.eclipse.microprofile.metrics.annotation.Timed;
+import org.eclipse.microprofile.metrics.annotation.Metered;
 
 @Log
 @ApplicationScoped
@@ -47,7 +46,11 @@ public class BlogsResource {
     @Context
     protected UriInfo uriInfo;
 
+    @Context
+    private UsersService usersService;
+
     @GET
+    @Timed(name = "get_blogs_time")
     @Operation(description = "Get blogs by filter, or all.", summary = "Get blogs by filter, or all.")
     @APIResponses({
             @APIResponse(
@@ -91,6 +94,7 @@ public class BlogsResource {
     }
 
     @POST
+    @Timed(name = "post_blogs_time")
     @Operation(description = "Create new blog.", summary = "Create new blog.")
     @APIResponses({
             @APIResponse(
@@ -108,6 +112,9 @@ public class BlogsResource {
                 blogEntity.getText() == null || blogEntity.getUserId() == null) {
             return Response.status(300).build();
         } else {
+            if (!usersService.checkUserExists(blogEntity.getUserId())) {
+                return Response.status(Response.Status.NOT_FOUND).build();
+            }
             blogEntity.setTimestamp(Instant.now());
             blogEntity = blogBean.createBlog(blogEntity);
         }
@@ -162,6 +169,7 @@ public class BlogsResource {
 
     @DELETE
     @Path("{blogId}")
+    @Timed(name = "delete_blogs_time")
     @Operation(description = "Delete a blog.", summary = "Delete a blog.")
     @APIResponses({
             @APIResponse(

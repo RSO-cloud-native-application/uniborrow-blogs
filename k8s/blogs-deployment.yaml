@@ -13,7 +13,7 @@ spec:
         app: uniborrow-blogs
     spec:
       containers:
-        - image: mp6079/blogs:2022-01-10-05-31-24
+        - image: mp6079/blogs:2022-01-11-01-08-30
           name: blogs
           env:
             - name: KUMULUZEE_DATASOURCES0_CONNECTIONURL
