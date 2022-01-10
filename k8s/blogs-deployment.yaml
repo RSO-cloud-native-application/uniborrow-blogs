@@ -13,7 +13,7 @@ spec:
         app: uniborrow-blogs
     spec:
       containers:
-        - image: mp6079/blogs:2022-01-11-04-03-26
+        - image: mp6079/blogs:2022-01-11-04-19-39
           name: blogs
           env:
             - name: KUMULUZEE_DATASOURCES0_CONNECTIONURL
@@ -43,14 +43,16 @@ spec:
             httpGet:
               path: /health/live
               port: server
-            initialDelaySeconds: 20
-            periodSeconds: 3
+            initialDelaySeconds: 60
+            periodSeconds: 10
+            timeoutSeconds: 3
           readinessProbe:
             httpGet:
               path: /health/ready
               port: server
-            initialDelaySeconds: 20
-            periodSeconds: 3
+            initialDelaySeconds: 60
+            periodSeconds: 10
+            timeoutSeconds: 3
 
 ---
 
